@@ -12,26 +12,20 @@ pip install -e .
 
 ```python
 import wealth_tracker as sdk
-
-pro = sdk.pro_api()
-data = pro.query_agent(query="25年营业总收入前十的公司有哪些")
-print(data)
+with sdk.pro_api() as pro:
+    resp = pro.industry_news_viewpoints(query="黄金最近值得投资吗？")
+    print(resp)
 ```
 
 ## 常用接口
 
 - Search：
-  - `pro.query_agent(...)`
   - `pro.industry_news_viewpoints(...)`
 - Stock：
   - `pro.single_stock_analysis(...)`
   - `pro.single_stock_market_daily_analysis(...)`
-  - `pro.single_stock_intraday_analysis(...)`
-  - `pro.single_stock_snapshot_analysis(...)`
 - Sector：
-  - `pro.concept_board_analysis(...)`
   - `pro.concept_board_rank_analysis(...)`
-  - `pro.concept_board_detail_analysis(...)`
   - `pro.industry_crowding_analysis(...)`
   - `pro.industry_leader_mktcap_analysis(...)`
   - `pro.industry_leader_financial_analysis(...)`
