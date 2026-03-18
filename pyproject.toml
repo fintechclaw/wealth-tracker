@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wealth-tracker"
+version = "0.1.0"
+description = "Python SDK for wealth tracker service"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wealth_tracker"]
+
