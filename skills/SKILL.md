@@ -5,8 +5,8 @@ description: "wealth_tracker 是 一个全面的金融skills指南。面向金�
 
 # 安装
 ```bash
-git clone git@github.com:YangSuoze/test-skill.git
-cd test-skill
+git clone git@github.com:fintechclaw/wealth-tracker.git
+cd wealth-tracker
 pip install ./finclaw_sdk-0.1.0-py3-none-any.whl
 ```
 # 快速开始
