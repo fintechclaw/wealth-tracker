@@ -5,7 +5,7 @@
 ## 安装
 在项目根目录执行
 ```bash
-pip install ./finclaw_sdk-0.1.0-py3-none-any.whl
+pip install ./finclaw_sdk-0.1.0-py3-none-any.whl --force-reinstall
 ```
 
 ## 快速开始

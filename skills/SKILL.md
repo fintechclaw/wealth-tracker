@@ -7,7 +7,7 @@ description: "wealth_tracker 是 一个全面的金融skills指南。面向金�
 ```bash
 git clone git@github.com:fintechclaw/wealth-tracker.git
 cd wealth-tracker
-pip install ./finclaw_sdk-0.1.0-py3-none-any.whl
+pip install ./finclaw_sdk-0.1.0-py3-none-any.whl --force-reinstall
 ```
 # 快速开始
 初始化最小可运行示例：
@@ -33,12 +33,36 @@ finally:
 ### 1) Search（行业/个股资讯、新闻、观点等文本分析内容）
 
 - `client.industry_news_viewpoints(query: str, start_time: str | None = None, end_time: str | None = None, count: int = 10)`
-  - 功能：搜索行业/个股问题相关的资讯、新闻、观点等文本分析内容。
+  - 功能：搜索行业/龙头个股 相关的重要资讯对行业影响的分析。
   - 参数：
     - `query`（必填，`str`）：用户问题。
     - `start_time`（可选，`str | None`）：开始时间，支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:MM:SS`。
     - `end_time`（可选，`str | None`）：结束时间，支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:MM:SS`。
     - `count`（可选，`int`，默认 `10`）：返回条数，范围 `[1, 50]`。
+
+- `client.analyze_chunks(query: str, start_time: str | None = None, end_time: str | None = None, count: int = 10)`
+  - 功能：根据用户问题，获取相关的分析文本，相比于 `industry_news_viewpoints`，分析深度和范围更广。
+  - 参数：
+    - `query`（必填，`str`）：用户问题。
+    - `start_time`（可选，`str | None`）：开始时间，支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:MM:SS`。
+    - `end_time`（可选，`str | None`）：结束时间，支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:MM:SS`。
+    - `count`（可选，`int`，默认 `10`）：返回条数，范围 `[1, 50]`。
+
+- `client.internet_news(query: str, start_time: str | None = None, end_time: str | None = None, count: int = 10)`
+  - 功能：根据用户问题，搜索互联网上的相关资讯。相比于 `industry_news_viewpoints`和 `analyze_chunks`，主要包含互联网上的各种开源信息。`industry_news_viewpoints`和 `analyze_chunks`均为自研分析文本内容。
+  - 参数：
+    - `query`（必填，`str`）：用户问题。
+    - `start_time`（可选，`str | None`）：开始时间，支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:MM:SS`。
+    - `end_time`（可选，`str | None`）：结束时间，支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:MM:SS`。
+    - `count`（可选，`int`，默认 `10`）：返回条数，范围 `[1, 50]`。
+
+搜索相关资料时，建议三个方法 `industry_news_viewpoints`、`analyze_chunks`、`internet_news` 均调用，以获取更全面的资讯和深度解读。
+
+- `client.auto_select_stocks(query: str)`
+  - 功能：根据用户问题自动选择股票。如：最新季度营业收入前十的公司有哪些？
+- `client.auto_select_funds(query: str)`
+  - 功能：根据用户问题自动选择基金。如：张坤管理的基金有哪些？
+
 
 ### 2) Stock（个股行情、财务、基本信息、分析等）
 - `client.stock_basic(thscode: str | None = None, stock_name: str | None = None, industry01: str | None = None, industry02: str | None = None, industry03: str | None = None)`
@@ -161,7 +185,7 @@ finally:
   - 功能：指数行情数据查询。
   - 参数同上。
 
-### 6) Special（市场专题/异动等深度分析）
+### 6) Special（市场专题/异动等深度/持仓组合权重回测分析）
 
 - `client.market_report(report_type: str)`
   - 功能：A股大盘报告早报/午报/晚报，如果需要每天早上、中午、晚上总结大盘走势等综合信息调用该接口。
@@ -199,6 +223,24 @@ finally:
     - `trade_date`（必填，`str`），格式`YYYYMMDD`。
   - 说明：
     - trade_date当天如果还没有闭市则反应实时信息。
+
+- `client.asset_daily_backtest(asset_type: str, holdings: dict[str,any], start_date: str | None = None, end_date: str | None = None, rolling_holding_days: int = 21)`
+  - 功能：获取当前股票/基金持仓组合权重和指定时间范围进行回测。回测得到：区间收益率、最大回撤、年化收益率、年化波动率、夏普比率、索提诺比率、卡玛比率、滚动持有胜率、每日净值轨迹信息（该接口不支持股票和基金混合组合，只能单独回测股票或基金持仓组合）。
+  - 参数：
+    - `asset_type`（必填，`str`）：可选 `stock` / `fund`。
+    - `holdings`（必填，`dict[str,any]`）：个股或基金持仓组合和权重列表，例如 `[{"asset_code": "600519.SH","weight":0.5},{"asset_code": "000002.SZ","weight": 0.3},{"asset_code": "002594.SZ","weight": 0.2}]`
+    - `start_date`（可选，`str | None`）：`YYYY-MM-DD`或`YYYYMMDD`。
+    - `end_date`（可选，`str | None`）：`YYYY-MM-DD`或`YYYYMMDD`。
+    - `rolling_holding_days`（可选，`int`，默认 `21`）：滚动持仓天数，范围通常 `1~200`。用来计算区间内持仓组合权重的滚动持仓胜率。
+  - 说明：
+    - 该接口end_date需要在交易日收盘后调用，否则对应的end_date无数据。
+
+### 7) Reports（相关专题报告）
+
+- `client.get_cot_report(positions: list[dict[str,any]])`
+  - 功能：获取当前股票/基金持仓组合对应的持仓报告（该接口支持股票和基金混合组合）。区别于`client.stocks_cot_data`，该接口返回的是持仓组合的详细报告分析，而不是简单的风险和关系矩阵计算结果。
+  - 参数：
+    - `positions`（必填，`list[dict[str,any]]`）：个股或基金持仓组合和权重列表，例如 `[{"thscode": "000001.SZ","name": "平安银行","share": 1000},{"thscode": "600519.SH","name": "贵州茅台","share": 10},{"thscode": "000547.SZ","name": "航天发展","share": 100}]` 格式，thscode为标的代码，name为股票名称，share对应持仓数量。
 
 ## 常见调用模板
 ### 1. 个股深度体检（基本面 + 估值 + 技术面）
